@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Object Detection</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+
+    <style>
+        html {
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        function App() {
+            const [isDarkMode, setIsDarkMode] = React.useState(() => {
+                return localStorage.getItem('theme') === 'dark' || 
+                       (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            });
+
+            const [isPaused, setIsPaused] = React.useState(false);
+
+            React.useEffect(() => {
+                const html = document.documentElement;
+                if (isDarkMode) {
+                    html.classList.add('dark');
+                    html.classList.remove('light');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    html.classList.remove('dark');
+                    html.classList.add('light');
+                    localStorage.setItem('theme', 'light');
+                }
+            }, [isDarkMode]);
+
+            const handlePauseResume = () => {
+                const video = document.getElementById('videoFeed');
+                if (!isPaused) {
+                    video.dataset.src = video.src;  // Save current src
+                    video.src = '';                 // Stop reload
+                } else {
+                    video.src = video.dataset.src;  // Resume feed
+                }
+                setIsPaused(!isPaused);
+            };
+
+            return (
+                <div className="min-h-screen flex flex-col font-sans">
+                    {/* Header */}
+                    <header className="sticky top-0 bg-white dark:bg-gray-800 shadow-md p-4 z-10 transition-colors duration-300">
+                        <div className="max-w-7xl mx-auto flex justify-between items-center">
+                            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                                Real-Time Object Detection
+                            </h1>
+                            <button
+                                onClick={() => setIsDarkMode(prev => !prev)}
+                                className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+                            >
+                                {isDarkMode ? (
+                                    <svg className="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                                    </svg>
+                                ) : (
+                                    <svg className="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                                    </svg>
+                                )}
+                            </button>
+                        </div>
+                    </header>
+
+                    {/* Main */}
+                    <main className="flex-grow flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8 transition-colors duration-300">
+                        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl max-w-4xl w-full animate-fade-in transition-colors duration-300">
+                            {/* Video Feed */}
+                            <img
+                                id="videoFeed"
+                                src="http://localhost:5000/video_feed"
+                                alt="Video Feed"
+                                className="w-full rounded-lg shadow-md"
+                                onError={(e) => {
+                                    e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQwIiBoZWlnaHQ9IjQ4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkVycm9yIGxvYWRpbmcgdmlkZW8gZmVlZDwvdGV4dD48L3N2Zz4=';
+                                    console.error('Failed to load video feed.');
+                                }}
+                            />
+                            <p className="mt-4 text-gray-800 dark:text-gray-200 text-center">
+                                Detect objects in real-time instantly!
+                            </p>
+
+                            {/* Pause / Resume Button */}
+                            <div className="flex justify-center mt-4 gap-4">
+                                <button
+                                    onClick={handlePauseResume}
+                                    className={`px-4 py-2 rounded text-white transition ${
+                                        isPaused ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'
+                                    }`}
+                                >
+                                    {isPaused ? 'Resume' : 'Pause'}
+                                </button>
+                            </div>
+                        </div>
+                    </main>
+
+                    {/* Footer */}
+                    <footer className="bg-gray-800 dark:bg-gray-900 text-white text-center p-4 transition-colors duration-300">
+                        <p>© 2026 Prajakta Singhal. All Rights Reserved.</p>
+                    </footer>
+                </div>
+            );
+        }
+
+        const { createRoot } = ReactDOM;
+        const container = document.getElementById('root');
+        const root = createRoot(container);
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
+
+
