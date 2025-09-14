@@ -46,10 +46,14 @@ Real-Time Object Detection with YOLOv8 is a Python project that performs object 
 ## Contribution
 Contributions are welcome! Please fork the repository and submit pull requests.
 
+## License
+This project is open-source under the MIT License.
+
 ## Contact
 Created and maintained by Prajakta Singhal.
 
 ---
+
 
 
 
