@@ -50,9 +50,12 @@ Contributions are welcome! Please fork the repository and submit pull requests.
 This project is open-source under the MIT License.
 
 ## Contact
-Created and maintained by Prajakta Singhal.
+Created and maintained by Prajakta Singhal.  
+For any questions or collaboration, please feel free to reach out via email:  
+[singhal.riya2018@gmail.com](mailto:singhal.riya2018@gmail.com)
 
 ---
+
 
 
 
