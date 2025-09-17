@@ -15,7 +15,7 @@ Real-Time Object Detection with YOLOv8 is a Python project that performs object 
 - Python (model inference and logic)
 - YOLOv8 (Ultralytics)
 - OpenCV (video stream and drawing)
-- HTML (user interface, if applicable)
+- HTML (user interface)
 
 ## Installation
 1. Clone the repository:
@@ -55,6 +55,7 @@ For any questions or collaboration, please feel free to reach out via email:
 [singhal.riya2018@gmail.com](mailto:singhal.riya2018@gmail.com)
 
 ---
+
 
 
 
